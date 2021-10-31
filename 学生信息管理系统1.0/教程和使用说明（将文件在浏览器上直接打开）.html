@@ -1,0 +1,283 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>基于python和MySQL数据库开发应用程序：学生信息成绩管理系统1.0版本</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><p></p><div class="toc"><h3>目录：</h3><ul><li><a href="#_1">前言</a></li><li><a href="#_6">一，需求分析</a></li><li><a href="#_8">二，前期准备</a></li><li><a href="#_22">三，编写代码</a></li><ul><li><a href="#1apppy_23">1.app.py</a></li><li><a href="#2__init__py_132">2.__init__.py</a></li><li><a href="#3modelspy_143">3.models.py</a></li></ul><li><a href="#_162">四，功能描述</a></li><ul><li><a href="#1_163">1.界面展示</a></li><li><a href="#2_167">2.系统流程图介绍</a></li><li><a href="#3_171">3.功能介绍</a></li><li><a href="#_182">系统优缺点</a></li></ul><li><a href="#_189">五，问题及学习汇总</a></li><li><a href="#_196">六，项目文件</a></li></ul></div><p></p>
+<h1><a id="_1"></a>前言</h1>
+<blockquote>
+<p>python是一门解释性和面向对象的编程语言，可应用于许多生活和工作场景，满足人们不同的需要。MySQL是一个开源免费的关系型数据库，深受用户和企业信赖。但是建立数据库（或表）和使用操作数据库有点繁杂，我们是否可以都在脚本编写中实现这些操作，并且很方便应用于我们的程序功能和代码中，答案是可以的！<br>
+接下来，我们将利用python和它的一个具有ORM(对象关系映射)的库来建立数据库表模型和在脚本简便地操纵数据库，并开发一个很实在的应用！<br>
+但是由于这个是初始版本（第一个版本），所以功能实现和结构上不追求尽善尽美，但是也是对于初学者来说或初始版本来说还是不错的，另外，希望读者继续关注笔者，已更新和呈现更好地功能完善的版本给受众！</p>
+</blockquote>
+<h1><a id="_6"></a>一，需求分析</h1>
+<blockquote>
+<p>对于许多初学者或大学专业学习一门基础的编程语言时都会要求编写一个学生成绩（或信息）管理系统，另外，无论是为了作业还是兴趣，编写一个实际的应用都会极大地增加你的编程能力和成就感，所以这个博文即可以当做你的（python语言）作业参考或开发这样一个应用的指导！</p>
+</blockquote>
+<h1><a id="_8"></a>二，前期准备</h1>
+
+<table>
+<thead>
+<tr>
+<th>知识要求或配置储备</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>python基础语法</td>
+<td>由于是初始版本，所以只利用简单明了的python语法来编写，保证通俗易懂，这也可以验证自己的学习成果</td>
+</tr>
+<tr>
+<td>SQLAlchemy库</td>
+<td>这个是python的一个库，能够满足构建面向对象的python和关系型数据库的桥梁，从而实现简洁的操作数据库中的数据，另外，我们还可以利用对应的SQL操作语句来操作数据，所以原生语言和本地SQLAlchemy方言（自己的函数和方法）两者兼用，要学习下基本的使用方法</td>
+</tr>
+<tr>
+<td>pymysql库</td>
+<td>由于SQLAlchemy是默认使用 SQLite 数据库，而我们使用的是MySQL，所以要下载这个库，最好掌握一些使用方法</td>
+</tr>
+<tr>
+<td>mysql基本使用</td>
+<td>虽然可以很方便地建立数据表和使用简洁的SQLAlchemy函数方法操作数据库数据（代替了繁杂原生的数据库操作），但是在一些功能实现上还是用原生语言操作数据库会很方便，因为SQLAlchemy实现某些功能时所用的函数和方法会很繁杂，所以还是要掌握基本的MySQL操作语句</td>
+</tr>
+<tr>
+<td>mysql数据库</td>
+<td>安装好数据库，并且设置好登录密码和账户名，并在MySQL中新建一个数据库（database）,名称可自定义</td>
+</tr>
+<tr>
+<td>GITHub</td>
+<td>最好能够访问和使用GIThub，因为我会把这个系统的文件上传的GitHub，以便大家学习，但是也会在CSDN上传项目的压缩包</td>
+</tr>
+</tbody>
+</table><p><mark>关于学习和开发中的疑难和解决方法会放在该博文的问题和学习汇总模块，如果需要文章后面学习！</mark><br>
+<strong>库包文件支持（本次开始时采用的是虚拟环境，读者可自由选择）</strong><br>
+<img src="https://img-blog.csdnimg.cn/c68245a86d364289bcdfc0ae3f3d384a.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBAU3RldmVEcmF3,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"></p>
+<h1><a id="_22"></a>三，编写代码</h1>
+<h2><a id="1apppy_23"></a>1.app.py</h2>
+<pre><code class="prism language-python"><span class="token keyword">from</span> models <span class="token keyword">import</span> STU<span class="token comment">#引入STU类，便于使用事物session操作</span>
+<span class="token keyword">from</span> __init__ <span class="token keyword">import</span> session<span class="token punctuation">,</span>engine<span class="token comment">#__init__为同目录下的数据库配置和连接模块</span>
+
+<span class="token keyword">def</span> <span class="token function">stu_information</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>  <span class="token comment"># 输入和保存学生相关信息的函数，此为该系统的重要数据部分</span>
+    name <span class="token operator">=</span> <span class="token builtin">input</span><span class="token punctuation">(</span><span class="token string">"请输入该学生的姓名："</span><span class="token punctuation">)</span>
+    number <span class="token operator">=</span> <span class="token builtin">input</span><span class="token punctuation">(</span><span class="token string">"请输入该学生的学号："</span><span class="token punctuation">)</span>
+    math <span class="token operator">=</span> <span class="token builtin">input</span><span class="token punctuation">(</span><span class="token string">"请输入该学生的数学成绩："</span><span class="token punctuation">)</span>
+    chinese <span class="token operator">=</span> <span class="token builtin">input</span><span class="token punctuation">(</span><span class="token string">"请输入该学生的语文成绩："</span><span class="token punctuation">)</span>
+    english <span class="token operator">=</span> <span class="token builtin">input</span><span class="token punctuation">(</span><span class="token string">"请输入该学生的英语成绩："</span><span class="token punctuation">)</span>
+    user <span class="token operator">=</span> STU<span class="token punctuation">(</span>name<span class="token operator">=</span>name<span class="token punctuation">,</span> number<span class="token operator">=</span>number<span class="token punctuation">,</span> math<span class="token operator">=</span>math<span class="token punctuation">,</span> chinese<span class="token operator">=</span>chinese<span class="token punctuation">,</span> english<span class="token operator">=</span>english<span class="token punctuation">)</span><span class="token comment">#左边的name是数据库(模型类)对应的列名name，右边name是我们input收集的变量</span>
+    session<span class="token punctuation">.</span>add<span class="token punctuation">(</span>user<span class="token punctuation">)</span>
+    session<span class="token punctuation">.</span>commit<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'&gt;&gt;添加成功！\n'</span><span class="token punctuation">)</span>
+
+<span class="token keyword">def</span> <span class="token function">stu_change</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>  <span class="token comment"># 修改单个学生信息功能的函数</span>
+    numbers <span class="token operator">=</span> <span class="token builtin">input</span><span class="token punctuation">(</span><span class="token string">"请输入该学生的学号："</span><span class="token punctuation">)</span>
+    users <span class="token operator">=</span> session<span class="token punctuation">.</span>query<span class="token punctuation">(</span>STU<span class="token punctuation">)</span><span class="token punctuation">.</span>filter_by<span class="token punctuation">(</span>number<span class="token operator">=</span>numbers<span class="token punctuation">)</span><span class="token punctuation">.</span>first<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment">#先查找出对应学号的对象，在重新添加信息覆盖之前的信息，达到修改的目的</span>
+    users<span class="token punctuation">.</span>name <span class="token operator">=</span> <span class="token builtin">input</span><span class="token punctuation">(</span><span class="token string">"请输入该学生的姓名："</span><span class="token punctuation">)</span>
+    users<span class="token punctuation">.</span>math <span class="token operator">=</span> <span class="token builtin">input</span><span class="token punctuation">(</span><span class="token string">"请输入该学生的数学成绩："</span><span class="token punctuation">)</span>
+    users<span class="token punctuation">.</span>chinese <span class="token operator">=</span> <span class="token builtin">input</span><span class="token punctuation">(</span><span class="token string">"请输入该学生的语文成绩："</span><span class="token punctuation">)</span>
+    users<span class="token punctuation">.</span>english <span class="token operator">=</span> <span class="token builtin">input</span><span class="token punctuation">(</span><span class="token string">"请输入该学生的英语成绩："</span><span class="token punctuation">)</span>
+    session<span class="token punctuation">.</span>add<span class="token punctuation">(</span>users<span class="token punctuation">)</span>
+    session<span class="token punctuation">.</span>commit<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span>
+
+<span class="token keyword">def</span> <span class="token function">stu_delete</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>  <span class="token comment"># 删除相关信息功能的函数</span>
+    numbers <span class="token operator">=</span> <span class="token builtin">eval</span><span class="token punctuation">(</span><span class="token builtin">input</span><span class="token punctuation">(</span><span class="token string">"请输入要删除学生信息的序号："</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    result<span class="token operator">=</span>session<span class="token punctuation">.</span>query<span class="token punctuation">(</span>STU<span class="token punctuation">)</span><span class="token punctuation">.</span>filter_by<span class="token punctuation">(</span>number<span class="token operator">=</span>numbers<span class="token punctuation">)</span><span class="token punctuation">.</span>first<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">if</span> result <span class="token operator">!=</span> <span class="token boolean">None</span><span class="token punctuation">:</span><span class="token comment">#若返回对象不为为空，继续删除操作</span>
+        session<span class="token punctuation">.</span>delete<span class="token punctuation">(</span>result<span class="token punctuation">)</span>
+        session<span class="token punctuation">.</span>commit<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'&gt;&gt;删除成功'</span><span class="token punctuation">)</span>
+    <span class="token keyword">else</span><span class="token punctuation">:</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'&gt;&gt;查无此人或你的输入有误！'</span><span class="token punctuation">)</span>
+
+<span class="token keyword">def</span> <span class="token function">stu_check</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>  <span class="token comment"># 查找相关信息的函数</span>
+    numbers <span class="token operator">=</span> <span class="token builtin">input</span><span class="token punctuation">(</span><span class="token string">"请输入要查询学生信息的序号："</span><span class="token punctuation">)</span>
+    result<span class="token operator">=</span>session<span class="token punctuation">.</span>query<span class="token punctuation">(</span>STU<span class="token punctuation">)</span><span class="token punctuation">.</span>filter_by<span class="token punctuation">(</span>number<span class="token operator">=</span>numbers<span class="token punctuation">)</span><span class="token punctuation">.</span>first<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">if</span> result <span class="token operator">!=</span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'-'</span> <span class="token operator">*</span> <span class="token number">56</span><span class="token punctuation">)</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'|{0:^22}|{1:^6}|{2:^6}|{3:^5}|{4:^5}|'</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span><span class="token string">'姓名'</span><span class="token punctuation">,</span> <span class="token string">'学号'</span><span class="token punctuation">,</span> <span class="token string">'数学'</span><span class="token punctuation">,</span> <span class="token string">'语文'</span><span class="token punctuation">,</span> <span class="token string">'英语'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'-'</span> <span class="token operator">*</span> <span class="token number">56</span><span class="token punctuation">)</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'|{0:^20}\t|{1:^6}\t|{2:^6}\t|{3:^6}\t|{4:^6}|'</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span>result<span class="token punctuation">.</span>name<span class="token punctuation">,</span> result<span class="token punctuation">.</span>number<span class="token punctuation">,</span> result<span class="token punctuation">.</span>math<span class="token punctuation">,</span>result<span class="token punctuation">.</span>chinese<span class="token punctuation">,</span> result<span class="token punctuation">.</span>english<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'-'</span> <span class="token operator">*</span> <span class="token number">56</span><span class="token punctuation">)</span>
+    <span class="token keyword">else</span><span class="token punctuation">:</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'&gt;&gt;查无此人或你的输入有误！'</span><span class="token punctuation">)</span>
+
+<span class="token keyword">def</span> <span class="token function">stu_all</span><span class="token punctuation">(</span><span class="token operator">*</span>b<span class="token punctuation">)</span><span class="token punctuation">:</span>  <span class="token comment"># 显示该系统中的所有学生信息数据</span>
+    all_result<span class="token operator">=</span>session<span class="token punctuation">.</span>query<span class="token punctuation">(</span>STU<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token builtin">all</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'&lt;全部学生成绩表&gt;'</span> <span class="token punctuation">.</span>center<span class="token punctuation">(</span><span class="token number">52</span><span class="token punctuation">,</span><span class="token string">'—'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'|{0:^22}|{1:^6}|{2:^6}|{3:^5}|{4:^5}|'</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span><span class="token string">'姓名'</span><span class="token punctuation">,</span><span class="token string">'学号'</span><span class="token punctuation">,</span><span class="token string">'数学'</span><span class="token punctuation">,</span><span class="token string">'语文'</span><span class="token punctuation">,</span><span class="token string">'英语'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token comment">#为了输出效果上构成一个表，输出格式进行了对应的调整</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'-'</span> <span class="token operator">*</span> <span class="token number">56</span><span class="token punctuation">)</span><span class="token comment">#该表的横线分隔部分是由‘-’构成，如果想用其他符号也可（+=）</span>
+    <span class="token keyword">for</span> i <span class="token keyword">in</span> all_result<span class="token punctuation">:</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'|{0:^20}\t|{1:^6}\t|{2:^6}\t|{3:^6}\t|{4:^6}|'</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span>i<span class="token punctuation">.</span>name<span class="token punctuation">,</span> i<span class="token punctuation">.</span>number<span class="token punctuation">,</span> i<span class="token punctuation">.</span>math<span class="token punctuation">,</span> i<span class="token punctuation">.</span>chinese<span class="token punctuation">,</span>i<span class="token punctuation">.</span>english<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'-'</span> <span class="token operator">*</span> <span class="token number">56</span><span class="token punctuation">)</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"&gt;&gt;已显示系统内所有人的信息！\n"</span><span class="token punctuation">)</span>
+
+<span class="token keyword">def</span> <span class="token function">stu_rank</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>  <span class="token comment"># 排序不同类型成绩的函数</span>
+    lists<span class="token operator">=</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token comment">#用于存储转换后的单个信息列表的列表</span>
+    rank_count<span class="token operator">=</span><span class="token number">0</span><span class="token comment">#用于排名表遍历输出次序设定的初始值</span>
+    rank_result<span class="token operator">=</span>engine<span class="token punctuation">.</span>execute<span class="token punctuation">(</span><span class="token string">'select *,(math+chinese+english) 总成绩 from stu order by 总成绩 desc'</span><span class="token punctuation">)</span><span class="token comment">#返回多个元组构成的结果，包含各个信息和总分</span>
+    <span class="token keyword">for</span> i <span class="token keyword">in</span> rank_result<span class="token punctuation">:</span>
+        p<span class="token operator">=</span><span class="token builtin">list</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token comment">#将单个元组转换成列表（数组），便于后面索引得到想要的数据</span>
+        lists<span class="token punctuation">.</span>append<span class="token punctuation">(</span>p<span class="token punctuation">)</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'&lt;总分排名表&gt;'</span><span class="token punctuation">.</span>center<span class="token punctuation">(</span><span class="token number">70</span><span class="token punctuation">,</span><span class="token string">'='</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token comment">#该表的横线分隔部分是由‘=’构成，如果想用其他符号也可（+-），不过实验过对于这个表这种效果比较好</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'|{0:^22}|{1:^6}|{2:^6}|{3:^5}|{4:^5}|{5:^8}|{6:^5}|'</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span><span class="token string">'姓名'</span><span class="token punctuation">,</span><span class="token string">'学号'</span><span class="token punctuation">,</span><span class="token string">'数学'</span><span class="token punctuation">,</span><span class="token string">'语文'</span><span class="token punctuation">,</span><span class="token string">'英语'</span><span class="token punctuation">,</span><span class="token string">'总分'</span><span class="token punctuation">,</span><span class="token string">'排名'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'='</span> <span class="token operator">*</span> <span class="token number">73</span><span class="token punctuation">)</span>
+    <span class="token keyword">for</span> k <span class="token keyword">in</span> lists<span class="token punctuation">:</span>
+        rank_count<span class="token operator">+=</span><span class="token number">1</span><span class="token comment">#每次遍历按总分降序出来的列表，遍历时记录操作，赋予对应的排名值</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'|{0:^20}\t|{1:^6}\t|{2:^6}\t|{3:^6}\t|{4:^6}|{5:^9}|{6:^6}|'</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span>k<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span>k<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span>k<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">,</span>k<span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">,</span>k<span class="token punctuation">[</span><span class="token number">5</span><span class="token punctuation">]</span><span class="token punctuation">,</span>k<span class="token punctuation">[</span><span class="token number">6</span><span class="token punctuation">]</span><span class="token punctuation">,</span>rank_count<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'='</span> <span class="token operator">*</span> <span class="token number">73</span><span class="token punctuation">)</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"&gt;&gt;已显示系统内所有人的总分排名信息！\n"</span><span class="token punctuation">)</span>
+
+<span class="token keyword">while</span> <span class="token boolean">True</span><span class="token punctuation">:</span>  <span class="token comment"># while循环使功能主界面能一直供用户使用，直到用户不需要为止</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'学生成绩管理系统，请选择系统功能'</span><span class="token punctuation">.</span>center<span class="token punctuation">(</span><span class="token number">71</span><span class="token punctuation">,</span><span class="token string">'-'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token comment">#功能选项也是在一个方框内</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'{0:&lt;3}{1:&lt;72}\t{2:&gt;}'</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span><span class="token string">'|'</span><span class="token punctuation">,</span><span class="token string">'1.输入学生信息;'</span><span class="token punctuation">,</span><span class="token string">'|'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'{0:&lt;3}{1:&lt;69}\t{2:&gt;}'</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span><span class="token string">'|'</span><span class="token punctuation">,</span><span class="token string">'2.修改学生的相关信息;'</span><span class="token punctuation">,</span><span class="token string">'|'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'{0:&lt;3}{1:&lt;69}\t{2:&gt;}'</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span><span class="token string">'|'</span><span class="token punctuation">,</span><span class="token string">'3.删除学生的相关信息;'</span><span class="token punctuation">,</span><span class="token string">'|'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'{0:&lt;3}{1:&lt;69}\t{2:&gt;}'</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span><span class="token string">'|'</span><span class="token punctuation">,</span><span class="token string">'4.查询学生信息;'</span><span class="token punctuation">,</span><span class="token string">'|'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'{0:&lt;3}{1:&lt;69}\t{2:&gt;}'</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span><span class="token string">'|'</span><span class="token punctuation">,</span><span class="token string">'5.显示所有学生的信息;'</span><span class="token punctuation">,</span><span class="token string">'|'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'{0:&lt;3}{1:&lt;72}\t{2:&gt;}'</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span><span class="token string">'|'</span><span class="token punctuation">,</span><span class="token string">'6.学生成绩排序;'</span><span class="token punctuation">,</span><span class="token string">'|'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'{0:&lt;3}{1:&lt;72}\t{2:&gt;}'</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span><span class="token string">'|'</span><span class="token punctuation">,</span><span class="token string">'0.退出程序;'</span><span class="token punctuation">,</span><span class="token string">'|'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'-'</span><span class="token operator">*</span><span class="token number">80</span><span class="token punctuation">,</span><span class="token string">'\n'</span><span class="token punctuation">)</span>
+    select <span class="token operator">=</span> <span class="token builtin">input</span><span class="token punctuation">(</span><span class="token string">"请输入你的功能选择&gt;&gt;"</span><span class="token punctuation">)</span>
+    <span class="token keyword">if</span> select <span class="token operator">==</span> <span class="token string">'1'</span><span class="token punctuation">:</span>
+        stu_information<span class="token punctuation">(</span><span class="token punctuation">)</span>  <span class="token comment"># 函数调用或传参使用</span>
+    <span class="token keyword">elif</span> select <span class="token operator">==</span> <span class="token string">'2'</span><span class="token punctuation">:</span>
+        stu_change<span class="token punctuation">(</span><span class="token punctuation">)</span>    <span class="token comment">#同上</span>
+    <span class="token keyword">elif</span> select <span class="token operator">==</span> <span class="token string">'3'</span><span class="token punctuation">:</span>
+        stu_delete<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">elif</span> select <span class="token operator">==</span> <span class="token string">'4'</span><span class="token punctuation">:</span>
+        stu_check<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">elif</span> select <span class="token operator">==</span> <span class="token string">'5'</span><span class="token punctuation">:</span>
+        stu_all<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">elif</span> select <span class="token operator">==</span> <span class="token string">'6'</span><span class="token punctuation">:</span>
+        stu_rank<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">elif</span> select <span class="token operator">==</span> <span class="token string">'0'</span><span class="token punctuation">:</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'\n'</span><span class="token punctuation">,</span><span class="token string">'本系统版本:version1.0'</span><span class="token punctuation">.</span>center<span class="token punctuation">(</span><span class="token number">65</span><span class="token punctuation">,</span><span class="token string">'-'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"感谢你的使用！！！祝你考试旗开得胜！！！"</span><span class="token punctuation">)</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"开发者:SteveDraw,么么哒^_^"</span><span class="token punctuation">)</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'-'</span><span class="token operator">*</span><span class="token number">70</span><span class="token punctuation">)</span>
+        <span class="token keyword">break</span>
+    <span class="token keyword">else</span><span class="token punctuation">:</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"&gt;&gt;你的输入错误！请按照提示重新输入！\n"</span><span class="token punctuation">)</span>  <span class="token comment"># 错误输入格式提醒</span>
+        <span class="token keyword">continue</span>
+</code></pre>
+<h2><a id="2__init__py_132"></a>2.<strong>init</strong>.py</h2>
+<pre><code class="prism language-python"><span class="token keyword">from</span> sqlalchemy <span class="token keyword">import</span> create_engine
+<span class="token keyword">from</span> sqlalchemy<span class="token punctuation">.</span>orm <span class="token keyword">import</span> sessionmaker
+<span class="token keyword">from</span> models <span class="token keyword">import</span> db<span class="token comment">#models为同目录下的数据库模型模块文件</span>
+engine<span class="token operator">=</span>create_engine<span class="token punctuation">(</span><span class="token string">'mysql+pymysql://root:&lt;你的mysql登录密码&gt;@localhost/sqltest'</span><span class="token punctuation">)</span><span class="token comment">#数据库连接引擎，根据自己所选的数据库配置即可</span>
+DbSession <span class="token operator">=</span> sessionmaker<span class="token punctuation">(</span>bind<span class="token operator">=</span>engine<span class="token punctuation">)</span>
+session <span class="token operator">=</span> DbSession<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment">#session用于创建程序和数据库之间的会话，所有对象的载入和保存都需要通过session对象</span>
+db<span class="token punctuation">.</span>metadata<span class="token punctuation">.</span>create_all<span class="token punctuation">(</span>engine<span class="token punctuation">)</span><span class="token comment">#创建数据表，原本存在即忽略</span>
+</code></pre>
+<h2><a id="3modelspy_143"></a>3.models.py</h2>
+<pre><code class="prism language-python"><span class="token keyword">from</span> sqlalchemy <span class="token keyword">import</span> Column<span class="token punctuation">,</span>Integer<span class="token punctuation">,</span>String
+<span class="token keyword">from</span> sqlalchemy<span class="token punctuation">.</span>ext<span class="token punctuation">.</span>declarative <span class="token keyword">import</span> declarative_base
+
+db<span class="token operator">=</span>declarative_base<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment">#这个是sqlalchemy内部封装的一个方法，通过其构造一个基类，这个基类和它的子类，可以将Python类和数据库表关联映射起来</span>
+
+<span class="token keyword">class</span> <span class="token class-name">STU</span><span class="token punctuation">(</span>db<span class="token punctuation">)</span><span class="token punctuation">:</span><span class="token comment">#在所选定的数据库，利用这个类模型建立数据表，并定义其中的类属性对应表中的字段属性</span>
+    __tablename__<span class="token operator">=</span><span class="token string">'stu'</span><span class="token comment">#将该表命名为stu</span>
+
+    <span class="token builtin">id</span><span class="token operator">=</span>Column<span class="token punctuation">(</span>Integer<span class="token punctuation">,</span>primary_key<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span><span class="token comment">#数据表的内置的序号，按输入顺序排的，作为关系表的主键</span>
+    name<span class="token operator">=</span>Column<span class="token punctuation">(</span>String<span class="token punctuation">(</span><span class="token number">64</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token comment">#</span>
+    number<span class="token operator">=</span>Column<span class="token punctuation">(</span>Integer<span class="token punctuation">,</span>unique<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span><span class="token comment">#由于学号是唯一的，并且我们以学号作为搜索的参考，所以用unique设为True，不能重复该值</span>
+    math<span class="token operator">=</span>Column<span class="token punctuation">(</span>Integer<span class="token punctuation">)</span>
+    chinese<span class="token operator">=</span>Column<span class="token punctuation">(</span>Integer<span class="token punctuation">)</span>
+    english<span class="token operator">=</span>Column<span class="token punctuation">(</span>Integer<span class="token punctuation">)</span>
+</code></pre>
+<p><mark><mark>以上三个文件都是同目录下的文件，注意下位置关系！</mark></mark></p>
+<h1><a id="_162"></a>四，功能描述</h1>
+<h2><a id="1_163"></a>1.界面展示</h2>
+<p><img src="https://img-blog.csdnimg.cn/7dcc59ba650d49dcbb79fc21d1d27c2b.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBAU3RldmVEcmF3,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"><br>
+<img src="https://img-blog.csdnimg.cn/c93a2671ac27407f8ff01095b98f7d98.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBAU3RldmVEcmF3,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"></p>
+<h2><a id="2_167"></a>2.系统流程图介绍</h2>
+<p><img src="https://img-blog.csdnimg.cn/136f065a0b104716a5662c2484efa6c6.jpg?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBAU3RldmVEcmF3,size_14,color_FFFFFF,t_70,g_se,x_16#pic_center" alt="在这里插入图片描述" width="250" height="500"></p>
+<h2><a id="3_171"></a>3.功能介绍</h2>
+
+<table>
+<thead>
+<tr>
+<th>功能模块</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>主界面</td>
+<td>输入提示对应的数字，即可实现对应的功能</td>
+</tr>
+<tr>
+<td>输入学生信息</td>
+<td>选择该功能后，依次根据输入提示，输入相关信息，即可完成操作</td>
+</tr>
+<tr>
+<td>修改学生的相关信息</td>
+<td>以学号为查询的条件，修改除学号的其他信息</td>
+</tr>
+<tr>
+<td>删除学生的相关信息</td>
+<td>以学号为查询的条件，删除该学号的对应的同学的所有信息（包括该学号）</td>
+</tr>
+<tr>
+<td>查询学生信息</td>
+<td>以学号为查询的条件，即可返回对应同学的信息</td>
+</tr>
+<tr>
+<td>显示所有学生的信息</td>
+<td>选择该功能后，即可出现所有学生的成绩汇总，表格样式做了调整，使其和正常的表格样式一样，提高可阅读性</td>
+</tr>
+<tr>
+<td>学生成绩排序</td>
+<td>选择该功能后，即可出现根据总分排名的全部学生的排名表</td>
+</tr>
+<tr>
+<td>退出程序</td>
+<td>选择该功能后，结束系统的运行，并且出现相应的界面内容</td>
+</tr>
+</tbody>
+</table><h2><a id="_182"></a>系统优缺点</h2>
+
+<table>
+<thead>
+<tr>
+<th>系统优点</th>
+<th>系统缺点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.能比较地方便利用数据库模型建立数据表；</td>
+<td>1.由于是初始版本，并且在运行窗口下交互，所以，一些运行错误检查还不完善；</td>
+</tr>
+<tr>
+<td>2.利用python语言及SQLAlchemy库能较好地操作数据库数据和数据库交互；</td>
+<td>2.如果主程序函数运行太久，可能由于电脑原因，再次操作会没反应，不过问题不大；</td>
+</tr>
+<tr>
+<td>3.最基本的学生信息管理系统功能都实现了，另外，代码结构及调用也比较简单；</td>
+<td>3.数据信息还比较简陋，分析功能还略差，以后更新版本来拓展的；</td>
+</tr>
+<tr>
+<td>4.输出界面时模仿表格样式和结构，可读性大大增强</td>
+<td>4.无数据库迁移拓展，以后的版本会拓展的；</td>
+</tr>
+</tbody>
+</table><h1><a id="_189"></a>五，问题及学习汇总</h1>
+<p><a href="https://docs.sqlalchemy.org/en/14/tutorial/index.html">SQLAlchemy使用文档</a><br>
+<a href="https://cloud.tencent.com/developer/article/1693001">Python SQLAlchemy入门教程</a><br>
+<a href="https://juejin.cn/post/6850418114770550792">Python操作MySql——使用SQLAlchemy ORM操作数据库</a><br>
+<a href="https://www.cnblogs.com/ccorz/p/5711955.html">Python操作MySQL之SQLAlchemy</a><br>
+<a href="https://blog.csdn.net/SteveZhou212/article/details/117921303">Windows平台下MySQL的安装和基本命令行使用</a><br>
+<a href="https://blog.csdn.net/SteveZhou212/article/details/115497987">基于python语言的成绩管理系统（无数据库版本）</a></p>
+<h1><a id="_196"></a>六，项目文件</h1>
+<p><a href="https://download.csdn.net/download/SteveZhou212/35939212">文件压缩包下载</a></p>
+</div>
+</body>
+
+</html>
