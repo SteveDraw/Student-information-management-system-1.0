@@ -9,7 +9,7 @@
 </head>
 
 <body class="stackedit">
-  <div class="stackedit__html"><p></p><div class="toc"><h3>目录：</h3><ul><li><a href="#_1">前言</a></li><li><a href="#_6">一，需求分析</a></li><li><a href="#_8">二，前期准备</a></li><li><a href="#_22">三，编写代码</a></li><ul><li><a href="#1apppy_23">1.app.py</a></li><li><a href="#2__init__py_132">2.__init__.py</a></li><li><a href="#3modelspy_143">3.models.py</a></li></ul><li><a href="#_162">四，功能描述</a></li><ul><li><a href="#1_163">1.界面展示</a></li><li><a href="#2_167">2.系统流程图介绍</a></li><li><a href="#3_171">3.功能介绍</a></li><li><a href="#_182">系统优缺点</a></li></ul><li><a href="#_189">五，问题及学习汇总</a></li><li><a href="#_196">六，项目文件</a></li></ul></div><p></p>
+  <div class="stackedit__html"><p></p><div class="toc"><h3>目录：</h3><ul><li><a href="#_1">前言</a></li><li><a href="#_6">一，需求分析</a></li><li><a href="#_8">二，前期准备</a></li><li><a href="#_22">三，编写代码</a></li><ul><li><a href="#1apppy_23">1.app.py</a></li><li><a href="#2__init__py_132">2.__init__.py</a></li><li><a href="#3modelspy_143">3.models.py</a></li></ul><li><a href="#_167">四，功能描述</a></li><ul><li><a href="#1_168">1.界面展示</a></li><li><a href="#2_172">2.系统流程图介绍</a></li><li><a href="#3_176">3.功能介绍</a></li><li><a href="#_187">系统优缺点</a></li></ul><li><a href="#_194">五，问题及学习汇总</a></li><li><a href="#_201">六，项目文件</a></li></ul></div><p></p>
 <h1><a id="_1"></a>前言</h1>
 <blockquote>
 <p>python是一门解释性和面向对象的编程语言，可应用于许多生活和工作场景，满足人们不同的需要。MySQL是一个开源免费的关系型数据库，深受用户和企业信赖。但是建立数据库（或表）和使用操作数据库有点繁杂，我们是否可以都在脚本编写中实现这些操作，并且很方便应用于我们的程序功能和代码中，答案是可以的！<br>
@@ -191,14 +191,19 @@ db<span class="token operator">=</span>declarative_base<span class="token punctu
     chinese<span class="token operator">=</span>Column<span class="token punctuation">(</span>Integer<span class="token punctuation">)</span>
     english<span class="token operator">=</span>Column<span class="token punctuation">(</span>Integer<span class="token punctuation">)</span>
 </code></pre>
-<p><mark><mark>以上三个文件都是同目录下的文件，注意下位置关系！</mark></mark></p>
-<h1><a id="_162"></a>四，功能描述</h1>
-<h2><a id="1_163"></a>1.界面展示</h2>
+<p><mark><mark>以上三个文件都是同目录下的文件，注意下位置关系！</mark></mark><br>
+运行流程：<br>
+0.建立好mysql数据库（即对应使用的数据库）<br>
+1.先建立编写好的models.py；<br>
+2.再运行编写好的配置初始文件__init__.py文件；<br>
+3.再运行主程序app.py文件</p>
+<h1><a id="_167"></a>四，功能描述</h1>
+<h2><a id="1_168"></a>1.界面展示</h2>
 <p><img src="https://img-blog.csdnimg.cn/7dcc59ba650d49dcbb79fc21d1d27c2b.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBAU3RldmVEcmF3,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"><br>
 <img src="https://img-blog.csdnimg.cn/c93a2671ac27407f8ff01095b98f7d98.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBAU3RldmVEcmF3,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"></p>
-<h2><a id="2_167"></a>2.系统流程图介绍</h2>
+<h2><a id="2_172"></a>2.系统流程图介绍</h2>
 <p><img src="https://img-blog.csdnimg.cn/136f065a0b104716a5662c2484efa6c6.jpg?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBAU3RldmVEcmF3,size_14,color_FFFFFF,t_70,g_se,x_16#pic_center" alt="在这里插入图片描述" width="250" height="500"></p>
-<h2><a id="3_171"></a>3.功能介绍</h2>
+<h2><a id="3_176"></a>3.功能介绍</h2>
 
 <table>
 <thead>
@@ -241,7 +246,7 @@ db<span class="token operator">=</span>declarative_base<span class="token punctu
 <td>选择该功能后，结束系统的运行，并且出现相应的界面内容</td>
 </tr>
 </tbody>
-</table><h2><a id="_182"></a>系统优缺点</h2>
+</table><h2><a id="_187"></a>系统优缺点</h2>
 
 <table>
 <thead>
@@ -268,15 +273,17 @@ db<span class="token operator">=</span>declarative_base<span class="token punctu
 <td>4.无数据库迁移拓展，以后的版本会拓展的；</td>
 </tr>
 </tbody>
-</table><h1><a id="_189"></a>五，问题及学习汇总</h1>
+</table><h1><a id="_194"></a>五，问题及学习汇总</h1>
 <p><a href="https://docs.sqlalchemy.org/en/14/tutorial/index.html">SQLAlchemy使用文档</a><br>
 <a href="https://cloud.tencent.com/developer/article/1693001">Python SQLAlchemy入门教程</a><br>
 <a href="https://juejin.cn/post/6850418114770550792">Python操作MySql——使用SQLAlchemy ORM操作数据库</a><br>
 <a href="https://www.cnblogs.com/ccorz/p/5711955.html">Python操作MySQL之SQLAlchemy</a><br>
 <a href="https://blog.csdn.net/SteveZhou212/article/details/117921303">Windows平台下MySQL的安装和基本命令行使用</a><br>
 <a href="https://blog.csdn.net/SteveZhou212/article/details/115497987">基于python语言的成绩管理系统（无数据库版本）</a></p>
-<h1><a id="_196"></a>六，项目文件</h1>
-<p><a href="https://download.csdn.net/download/SteveZhou212/35939212">文件压缩包下载</a></p>
+<h1><a id="_201"></a>六，项目文件</h1>
+<p><a href="https://download.csdn.net/download/SteveZhou212/35939212">文件压缩包下载</a><br>
+<a href="https://github.com/SteveDraw/Student-information-management-system-1.0">GitHub项目地址</a></p>
+<p>--------------------------------------------------最后，文中如有不足，敬请批评指正！------------------------------------------------------------</p>
 </div>
 </body>
 
